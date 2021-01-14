@@ -1,16 +1,32 @@
-<html>
-  <head>
-    <link rel="stylesheet" href="styles.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="scripts.js"></script>
-  </head>
-  <body>
-    <div id="letters">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hangman</title>
+    <link rel="stylesheet" href="styles.css" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+</head>
+<body>
+  <ul class="grid-container">
+    <div class="container left">
+      <div class="grid-item">
+        <h1>Hangman </h1>
+        <br>
+        <div class="grid-item button__container" id="button"></div>
+        <br>
+        <p class="grid-item" id="wordSpotlight">The word to be guessed goes here</p>
+        <div>With <span id="mistakes">0</span> failures of :<span id="maxWrong"></span></div>
+      </div>
+      <img class="grid-item" id="hangman" src="./images/gallows0.jpg" alt="gallows">
     </div>
-    <h1 id="word">
-
-    </h1>
-    <img id="hangman" src="images/0.jpg" />
-  </body>
-  <footer></footer>
+    <div class="container right">
+     <div class="grid-item">
+          <button class="reset-button" onClick="reset()">New Game!</button>
+        </div>
+    </div>
+    </ul>
+  <script src="./scripts.js"></script>
+</body>
 </html>

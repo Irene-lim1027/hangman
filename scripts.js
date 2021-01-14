@@ -1,44 +1,85 @@
-console.log('loaded scripts');
 
-const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G','H','I','J',
-'K','L','M','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+let words = ["apple", "peach", "pear", "blueberry", "coconut", "fig", "pineapple", "orange", "banana", "plum"];
 
-const WORDS = ['apples','pears','bananas','watermelon','tomato','lemon','strawberry','grapes','lime','cherry','blueberry','peach'];
-const selectedWord = WORDS[0];
+let answer = "";
+let maxWrong = 6;
+let mistakes = 0;
+let guessed = [];
+let wordStatus = null;
+let keys = [];
 
-let guessedLetters = [];
-let incorrectGuesses = 0;
-
-$(document).ready(() => {
-  // create buttons for all letters
-  for (letter of LETTERS) {
-    $('#letters').append(
-      `<button id="letter-${letter}" onclick='guessLetter("${letter}")'>${letter}</button>`
-    );
-  }
-
-  $('#word').text(generateWord(selectedWord, guessedLetters));
-});
-
-function generateWord(word, guesses) {
-  let result = word.split('');
-
-  result = result.map((letter) => (guesses.includes(letter) ? letter : ' '));
-
-  return `${result.join(' ')}`;
+function randomWord() {
+    answer = words[Math.floor(Math.random() * words.length)];
 }
 
-function guessLetter(letter) {
-  if (!guessedLetters.includes(letter)) {
-    $(`#letter-${letter}`).toggleClass('guessed');
-    guessedLetters.push(letter);
-    $('#word').text(generateWord(selectedWord, guessedLetters));
-    
-    // was it an incorrect guess?
-    if (!selectedWord.includes(letter)) {
-      incorrectGuesses++
-      $('#hangman').attr('src', `images/${incorrectGuesses}.jpg`)
+function generateButtons() {
+    let buttonsHTML='abcdefghijklmnopqrstuvwxyz'.split("").map(letter => 
+        `
+            <button 
+            class="letterButtons"
+            type ="submit"
+            id='` + letter + `'
+            onClick="handleGuess('` + letter + `')"
+            onKey="handleGuess('` + letter + `')"
+            >
+                ` + letter + `
+            </button>
+        `).join('');
+    document.getElementById('button').innerHTML = buttonsHTML;
+}
+
+
+function handleGuess(guessedLetter) {
+    guessed.indexOf(guessedLetter) === -1 ? guessed.push(guessedLetter) : null;
+    document.getElementById(guessedLetter).setAttribute('disabled', true);
+    if (answer.indexOf(guessedLetter) >= 0) {
+        guessedWord();
+        checkIfGameWon();
+    } else if (answer.indexOf(guessedLetter) === -1) {
+        mistakes++;
+        updateMistakes();
+        checkIfGameLost();
+        updateHangmanPicture();
     }
-  }
 }
-  
+function updateHangmanPicture(){
+    document.getElementById('hangman').src = './images/gallows' + mistakes + '.jpg';
+}
+function checkIfGameWon () {
+    if (wordStatus === answer){
+        document.getElementById('button').innerHTML = "Congratulations, you won!:" 
+        setTimeout(() => {
+            alert("You escaped the noose!"
+        )},100);
+    }
+}
+function checkIfGameLost () {
+    if (mistakes === maxWrong){
+        document.getElementById('button').innerHTML = 'Sorry, you lost!'
+        document.getElementById('wordSpotlight').innerHTML = 'The word was: ' + answer
+        setTimeout(() => {
+            alert("Better luck next time!")
+        }, 100)
+    }
+}
+function guessedWord(){
+    wordStatus = answer.split('').map(letter => (guessed.indexOf(letter) >= 0 ? letter : " _ ")).join("");
+    document.getElementById('wordSpotlight').innerHTML = wordStatus;
+}
+function updateMistakes(){
+    document.getElementById('mistakes').innerHTML = mistakes;
+}
+function reset(){
+    mistakes = 0;
+    guessed = [];
+    keys = [];
+    document.getElementById('hangman').src = './images/gallows0.jpg';
+    randomWord();
+    guessedWord();
+    updateMistakes();
+    generateButtons();
+}
+document.getElementById('maxWrong').innerHTML = maxWrong;
+randomWord();
+generateButtons();
+guessedWord();
